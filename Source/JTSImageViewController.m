@@ -1257,10 +1257,29 @@ typedef struct {
 #pragma mark - Snapshots
 
 - (UIView *)snapshotFromParentmostViewController:(UIViewController *)viewController {
-    
     UIViewController *presentingViewController = viewController.view.window.rootViewController;
+    UIGraphicsBeginImageContextWithOptions(presentingViewController.view.bounds.size, NO, 0);
+    
+    UIViewController *old = presentingViewController;
+    [presentingViewController.view drawViewHierarchyInRect:presentingViewController.view.bounds afterScreenUpdates:YES];
     while (presentingViewController.presentedViewController) presentingViewController = presentingViewController.presentedViewController;
-    UIView *snapshot = [presentingViewController.view snapshotViewAfterScreenUpdates:YES];
+    if(old != presentingViewController) {
+        // we have a modal view controller on the iPad.
+        // -> darken previous VC screenshot and draw modal view controller
+        UIView *darkeningView = [[UIView alloc] initWithFrame:old.view.bounds];
+        darkeningView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.48]; // 0.48 is the magic number apple uses to darken the view behind the modal (almost at least)
+        [darkeningView drawViewHierarchyInRect:old.view.bounds afterScreenUpdates:YES];
+        CGRect target = CGRectMake(old.view.center.x - CGRectGetWidth(presentingViewController.view.bounds)/2,
+                                   old.view.center.y - CGRectGetHeight(presentingViewController.view.bounds)/2,
+                                   CGRectGetWidth(presentingViewController.view.bounds),
+                                   CGRectGetHeight(presentingViewController.view.bounds));
+        [presentingViewController.view drawViewHierarchyInRect:target afterScreenUpdates:YES];
+    }
+    
+    UIImage *copied = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    UIView *snapshot = [[UIImageView alloc] initWithImage:copied];
     snapshot.clipsToBounds = NO;
     return snapshot;
 }
