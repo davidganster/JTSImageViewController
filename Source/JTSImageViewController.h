@@ -34,6 +34,7 @@ typedef NS_OPTIONS(NSInteger, JTSImageViewControllerBackgroundOptions) {
     JTSImageViewControllerBackgroundOption_None = 0,
     JTSImageViewControllerBackgroundOption_Scaled = 1 << 0,
     JTSImageViewControllerBackgroundOption_Blurred = 1 << 1,
+    JTSImageViewControllerBackgroundOption_White = 1 << 2
 };
 
 extern CGFloat const JTSImageViewController_DefaultAlphaForBackgroundDimmingOverlay;

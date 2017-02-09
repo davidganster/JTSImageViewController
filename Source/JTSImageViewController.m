@@ -427,7 +427,11 @@ typedef struct {
     self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
     self.blackBackdrop = [[UIView alloc] initWithFrame:CGRectInset(self.view.bounds, -512, -512)];
-    self.blackBackdrop.backgroundColor = [UIColor blackColor];
+    if(self.backgroundOptions & JTSImageViewControllerBackgroundOption_White) {
+        self.blackBackdrop.backgroundColor = [UIColor whiteColor];
+    } else {
+        self.blackBackdrop.backgroundColor = [UIColor blackColor];
+    }
     self.blackBackdrop.alpha = 0;
     [self.view addSubview:self.blackBackdrop];
     
@@ -496,7 +500,11 @@ typedef struct {
     self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
     self.blackBackdrop = [[UIView alloc] initWithFrame:CGRectInset(self.view.bounds, -512, -512)];
-    self.blackBackdrop.backgroundColor = [UIColor blackColor];
+    if(self.backgroundOptions & JTSImageViewControllerBackgroundOption_White) {
+        self.blackBackdrop.backgroundColor = [UIColor whiteColor];
+    } else {
+        self.blackBackdrop.backgroundColor = [UIColor blackColor];
+    }
     self.blackBackdrop.alpha = 0;
     [self.view addSubview:self.blackBackdrop];
     
@@ -964,7 +972,11 @@ typedef struct {
     if ([self.optionsDelegate respondsToSelector:@selector(alphaForBackgroundDimmingOverlayInImageViewer:)]) {
         alpha = [self.optionsDelegate alphaForBackgroundDimmingOverlayInImageViewer:self];
     } else {
-        alpha = JTSImageViewController_DefaultAlphaForBackgroundDimmingOverlay;
+        if(self.backgroundOptions & JTSImageViewControllerBackgroundOption_White) {
+            alpha = 1;
+        } else {
+            alpha = JTSImageViewController_DefaultAlphaForBackgroundDimmingOverlay;
+        }
     }
     
     return alpha;
